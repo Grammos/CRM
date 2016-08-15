@@ -1,0 +1,180 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package Ejb;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author Gramos
+ */
+@Entity
+@Table(name = "Kontrata")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Kontrata.findAll", query = "SELECT k FROM Kontrata k"),
+    @NamedQuery(name = "Kontrata.findByKontrataId", query = "SELECT k FROM Kontrata k WHERE k.kontrataId = :kontrataId"),
+    @NamedQuery(name = "Kontrata.findByKompania", query = "SELECT k FROM Kontrata k WHERE k.kompania = :kompania"),
+    @NamedQuery(name = "Kontrata.findByPozita", query = "SELECT k FROM Kontrata k WHERE k.pozita = :pozita"),
+    @NamedQuery(name = "Kontrata.findByPaga", query = "SELECT k FROM Kontrata k WHERE k.paga = :paga"),
+    @NamedQuery(name = "Kontrata.findByData", query = "SELECT k FROM Kontrata k WHERE k.data = :data")})
+public class Kontrata implements Serializable {
+    @Basic(optional = false)
+    @Column(name = "Data")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date data;
+    @Basic(optional = false)
+    @Column(name = "Emri")
+    private String emri;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kontrataid")
+    private Collection<Punetori> punetoriCollection;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "Kontrata_Id")
+    @GeneratedValue(generator="Kid")
+    @SequenceGenerator(name="Kid",sequenceName="K_Id", allocationSize=1)
+    private Integer kontrataId;
+    @Basic(optional = false)
+    @Column(name = "Kompania")
+    private String kompania;
+    @Basic(optional = false)
+    @Column(name = "Pozita")
+    private String pozita;
+    @Basic(optional = false)
+    @Column(name = "Paga")
+    private int paga;
+    @JoinColumn(name = "Kontrata_Id", referencedColumnName = "P_id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private Punetori punetori;
+
+    public Kontrata() {
+    }
+
+    public Kontrata(Integer kontrataId) {
+        this.kontrataId = kontrataId;
+    }
+
+    public Kontrata(Integer kontrataId, String kompania, String pozita, int paga, Date data) {
+        this.kontrataId = kontrataId;
+        this.kompania = kompania;
+        this.pozita = pozita;
+        this.paga = paga;
+        this.data=data;
+    }
+
+    public Integer getKontrataId() {
+        return kontrataId;
+    }
+
+    public void setKontrataId(Integer kontrataId) {
+        this.kontrataId = kontrataId;
+    }
+
+    public String getKompania() {
+        return kompania;
+    }
+
+    public void setKompania(String kompania) {
+        this.kompania = kompania;
+    }
+
+    public String getPozita() {
+        return pozita;
+    }
+
+    public void setPozita(String pozita) {
+        this.pozita = pozita;
+    }
+
+    public int getPaga() {
+        return paga;
+    }
+
+    public void setPaga(int paga) {
+        this.paga = paga;
+    }
+
+
+    public Punetori getPunetori() {
+        return punetori;
+    }
+
+    public void setPunetori(Punetori punetori) {
+        this.punetori = punetori;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (kontrataId != null ? kontrataId.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Kontrata)) {
+            return false;
+        }
+        Kontrata other = (Kontrata) object;
+        if ((this.kontrataId == null && other.kontrataId != null) || (this.kontrataId != null && !this.kontrataId.equals(other.kontrataId))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return emri;
+    }
+
+
+    @XmlTransient
+    public Collection<Punetori> getPunetoriCollection() {
+        return punetoriCollection;
+    }
+
+    public void setPunetoriCollection(Collection<Punetori> punetoriCollection) {
+        this.punetoriCollection = punetoriCollection;
+    }
+
+    public String getEmri() {
+        return emri;
+    }
+
+    public void setEmri(String emri) {
+        this.emri = emri;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+    
+}

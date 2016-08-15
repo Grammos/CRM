@@ -1,0 +1,811 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package gui;
+
+import Ejb.Oferta;
+import Ejb.OpenLead;
+import bl.OfertaInterface;
+import bl.OfertaRepository;
+import bl.OpenLeadInterface;
+import bl.OpenLeadRepository;
+import bl.UsersException;
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
+import model.ComboBoxModel.OfertaComboBoxModel;
+import models.TableModel.OfertaTableModel;
+import models.TableModel.OpenLeadTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.view.JRViewer;
+
+/**
+ *
+ * @author Gramos
+ */
+public class OpenLeadForm extends javax.swing.JInternalFrame {
+    OpenLeadInterface openleadRepository=new OpenLeadRepository();
+    OpenLeadTableModel openleadTableModel=new OpenLeadTableModel();
+    OpenLead item;
+    OfertaInterface ofertaRepository=new OfertaRepository();
+    OfertaComboBoxModel ofertaComboBoxModel;
+    private String status;
+    RowFilter<OfertaTableModel, Oferta> rf = null;
+    TableRowSorter sorter = null;
+    
+    /**
+     * Creates new form OpenLeadForm
+     */
+    public OpenLeadForm() {
+        initComponents();
+        tabelaLoad();
+        comboBoxLoad();
+    }
+     private void tabelaLoad()
+    {
+        List<OpenLead> lista=openleadRepository.findAll();
+        openleadTableModel.add(lista);
+        tabela.setModel(openleadTableModel);
+        openleadTableModel.fireTableDataChanged();
+        tabelaSelectedIndexChange();
+    }
+    private void comboBoxLoad()
+    {
+        List<Oferta> lista=ofertaRepository.findAll();
+        ofertaComboBoxModel=new OfertaComboBoxModel(lista);
+        this.cmb_Oferta.setModel(ofertaComboBoxModel);
+    }
+     private void tabelaSelectedIndexChange()
+    {
+        ListSelectionModel rowSM = tabela.getSelectionModel();
+        rowSM.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())
+                    return;
+                ListSelectionModel rowSM = (ListSelectionModel)e.getSource();
+                int selectedIndex = rowSM.getMinSelectionIndex();
+                if(selectedIndex > -1){
+                    OpenLead item = openleadTableModel.getLead(selectedIndex);
+                    txt_Emri.setText(item.getEmri());  
+                    txt_Mbiemri.setText(item.getMbiemri());
+                    txt_rruga.setText(item.getRruga());
+                    txt_Qyteti.setText(item.getQyteti());
+                    txt_Shteti.setText(item.getShteti());
+                    txt_Kodi.setText(item.getZipCode()+"");
+                    txt_Email.setText(item.getEmail());
+                    txt_Telefoni.setText(item.getTelefoni()+"");
+                    txt_Kompania.setText(item.getKompania());
+                    if(item.getLeadStatus().equals("Kontaktuar"))
+                    {
+                        R_Kontaktuar.setSelected(true);
+                    }
+                    if(item.getLeadStatus().equals("PaKontaktuar"))
+                    {
+                        R_PaKontaktuar.setSelected(true);
+                    }
+                    
+                    cmb_Oferta.setSelectedItem(item.getOfertaid());
+                    cmb_Oferta.repaint();;
+                }
+            }
+        });
+    }
+     
+      public void emptyObject()
+    {
+        txt_Emri.setText("");  
+        txt_Mbiemri.setText("");
+        txt_rruga.setText("");
+        txt_Qyteti.setText("");
+        txt_Shteti.setText("");
+        txt_Kodi.setText("");
+        txt_Email.setText("");
+        txt_Telefoni.setText("");
+        txt_Kompania.setText("");
+        buttonGroup1.clearSelection();
+        cmb_Oferta.setSelectedItem(null);
+        cmb_Oferta.repaint();;
+        tabela.clearSelection();
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        btn_Save = new javax.swing.JButton();
+        btn_Delete = new javax.swing.JButton();
+        btn_Cancel = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabela = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        txt_Emri = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txt_Mbiemri = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txt_rruga = new javax.swing.JTextField();
+        txt_Qyteti = new javax.swing.JTextField();
+        txt_Shteti = new javax.swing.JTextField();
+        txt_Kodi = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        txt_Email = new javax.swing.JTextField();
+        txt_Telefoni = new javax.swing.JTextField();
+        txt_Kompania = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        cmb_Oferta = new javax.swing.JComboBox();
+        jLabel11 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        R_Kontaktuar = new javax.swing.JRadioButton();
+        R_PaKontaktuar = new javax.swing.JRadioButton();
+        btn_Raporti = new javax.swing.JButton();
+        btn_Pdf = new javax.swing.JButton();
+        btn_Excel = new javax.swing.JButton();
+        btn_Word = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        FilterId = new javax.swing.JTextField();
+
+        setClosable(true);
+        setIconifiable(true);
+        setTitle("Forma për regjistrimin e Lead");
+        setPreferredSize(new java.awt.Dimension(1080, 626));
+
+        btn_Save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Save-icon.png"))); // NOI18N
+        btn_Save.setText("Ruaje");
+        btn_Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_SaveActionPerformed(evt);
+            }
+        });
+
+        btn_Delete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Actions-edit-delete-icon.png"))); // NOI18N
+        btn_Delete.setText("Fshije");
+        btn_Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_DeleteActionPerformed(evt);
+            }
+        });
+
+        btn_Cancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Actions-dialog-cancel-icon.png"))); // NOI18N
+        btn_Cancel.setText("Anulo");
+        btn_Cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_CancelActionPerformed(evt);
+            }
+        });
+
+        tabela.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tabela);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        txt_Emri.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_EmriKeyTyped(evt);
+            }
+        });
+
+        jLabel2.setText("Emri");
+
+        jLabel3.setText("Mbiemri");
+
+        txt_Mbiemri.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_MbiemriKeyTyped(evt);
+            }
+        });
+
+        jLabel7.setText("Rruga");
+
+        txt_Qyteti.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_QytetiKeyTyped(evt);
+            }
+        });
+
+        txt_Kodi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_KodiKeyTyped(evt);
+            }
+        });
+
+        jLabel8.setText("Qyteti");
+
+        jLabel9.setText("Shteti");
+
+        jLabel10.setText("Zip kodi");
+
+        txt_Telefoni.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_TelefoniKeyTyped(evt);
+            }
+        });
+
+        jLabel4.setText("Email");
+
+        jLabel5.setText("Telefoni");
+
+        jLabel6.setText("Kompania");
+
+        cmb_Oferta.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel11.setText("Oferta");
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Statusi"));
+
+        buttonGroup1.add(R_Kontaktuar);
+        R_Kontaktuar.setText("I kontaktuar");
+        R_Kontaktuar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                R_KontaktuarActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(R_PaKontaktuar);
+        R_PaKontaktuar.setText("I pa kontaktuar");
+        R_PaKontaktuar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                R_PaKontaktuarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(R_Kontaktuar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(R_PaKontaktuar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(R_Kontaktuar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(R_PaKontaktuar)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txt_Emri, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txt_Qyteti, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                            .addComponent(txt_Mbiemri))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txt_Kodi, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_rruga, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_Shteti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(56, 56, 56)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_Kompania, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_Telefoni, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_Email, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addComponent(jLabel11)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmb_Oferta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(221, Short.MAX_VALUE))
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txt_Shteti, txt_rruga});
+
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmb_Oferta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txt_rruga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_Emri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4)
+                    .addComponent(txt_Email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_Mbiemri, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel9)
+                    .addComponent(txt_Shteti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txt_Telefoni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_Qyteti, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel10)
+                    .addComponent(txt_Kodi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txt_Kompania, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        btn_Raporti.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/report-icon.png"))); // NOI18N
+        btn_Raporti.setText("Lista");
+        btn_Raporti.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_RaportiActionPerformed(evt);
+            }
+        });
+
+        btn_Pdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pdf-icon.png"))); // NOI18N
+        btn_Pdf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_PdfActionPerformed(evt);
+            }
+        });
+
+        btn_Excel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Excel-icon.png"))); // NOI18N
+        btn_Excel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ExcelActionPerformed(evt);
+            }
+        });
+
+        btn_Word.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Word-icon.png"))); // NOI18N
+        btn_Word.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_WordActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel12.setText("Eksporto");
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtrimi sipas emrit"));
+
+        FilterId.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                FilterIdKeyTyped(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(FilterId, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(FilterId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btn_Save, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_Delete)
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_Cancel)
+                        .addGap(70, 70, 70)
+                        .addComponent(btn_Raporti, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btn_Pdf)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_Excel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_Word, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Cancel, btn_Delete, btn_Save});
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Excel, btn_Pdf, btn_Word});
+
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel12)
+                        .addGap(1, 1, 1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btn_Pdf, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_Word, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_Excel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btn_Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_Delete)
+                                .addComponent(btn_Save, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_Raporti, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(7, 7, 7))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Cancel, btn_Delete, btn_Save});
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Excel, btn_Pdf, btn_Raporti, btn_Word});
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SaveActionPerformed
+        // TODO add your handling code here:
+        try{
+            int row = tabela.getSelectedRow();
+            if( txt_Emri.getText()!=null && !txt_Emri.getText().equals("")&& txt_Mbiemri.getText()!=null && !txt_Mbiemri.getText().equals("") &&txt_rruga.getText()!=null && !txt_rruga.getText().equals("") &&txt_Qyteti.getText()!=null && !txt_Qyteti.getText().equals("")&&txt_Shteti.getText()!=null && !txt_Shteti.getText().equals("")&&txt_Kodi.getText()!=null && !txt_Kodi.getText().equals("")&& txt_Email.getText()!=null && !txt_Email.getText().equals("") &&txt_Telefoni.getText()!=null && !txt_Telefoni.getText().equals("")&&txt_Kompania.getText()!=null && !txt_Kompania.getText().equals("")&& buttonGroup1.getSelection()!=null &&cmb_Oferta.getSelectedItem()!=null ){
+                if(row == -1){
+                    OpenLead o=new OpenLead();
+                    o.setEmri(txt_Emri.getText());
+                    o.setMbiemri(txt_Mbiemri.getText());
+                    o.setRruga(txt_rruga.getText());
+                    o.setQyteti(txt_Qyteti.getText());
+                    o.setShteti(txt_Shteti.getText());
+                    o.setZipCode(Integer.parseInt(txt_Kodi.getText()));  
+                    o.setEmail(txt_Email.getText());
+                    o.setTelefoni(Integer.parseInt(txt_Telefoni.getText()));
+                    o.setKompania(txt_Kompania.getText());
+                    o.setOfertaid(ofertaComboBoxModel.getElementAt(cmb_Oferta.getSelectedIndex()));
+                    o.setLeadStatus(status);
+                    openleadRepository.create(o);
+                    JOptionPane.showMessageDialog(this, "E dhëna u ruajt me sukses!");
+                }
+                else{
+                    OpenLead o=openleadTableModel.getLead(row);
+                    o.setEmri(txt_Emri.getText());
+                    o.setMbiemri(txt_Mbiemri.getText());
+                    o.setRruga(txt_rruga.getText());
+                    o.setQyteti(txt_Qyteti.getText());
+                    o.setShteti(txt_Shteti.getText());
+                    o.setZipCode(Integer.parseInt(txt_Kodi.getText()));  
+                    o.setEmail(txt_Email.getText());
+                    o.setTelefoni(Integer.parseInt(txt_Telefoni.getText()));
+                    o.setKompania(txt_Kompania.getText());
+                    o.setOfertaid(ofertaComboBoxModel.getElementAt(cmb_Oferta.getSelectedIndex()));
+                    o.setLeadStatus(status);
+                    openleadRepository.edit(o);
+                    JOptionPane.showMessageDialog(this, "E dhëna u editua me sukses!");
+                }
+                emptyObject();
+                tabelaLoad();
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Ju lutem plotësoni të gjitha fushat e detyrushme!");
+            }
+        }catch(UsersException re){
+            JOptionPane.showMessageDialog(this, re.getMessage());
+
+        }
+    }//GEN-LAST:event_btn_SaveActionPerformed
+
+    private void R_KontaktuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_KontaktuarActionPerformed
+        // TODO add your handling code here:
+        if(R_Kontaktuar.isSelected())
+        {
+            status="Kontaktuar";
+        }
+    }//GEN-LAST:event_R_KontaktuarActionPerformed
+
+    private void R_PaKontaktuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_R_PaKontaktuarActionPerformed
+       if(R_PaKontaktuar.isSelected())
+        {
+            status="PaKontaktuar";
+        }
+       
+    }//GEN-LAST:event_R_PaKontaktuarActionPerformed
+
+    private void btn_CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CancelActionPerformed
+        // TODO add your handling code here:
+        emptyObject();
+    }//GEN-LAST:event_btn_CancelActionPerformed
+
+    private void btn_DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DeleteActionPerformed
+        // TODO add your handling code here:
+        try{
+            int row=tabela.getSelectedRow();
+            if(row >-1)
+            {   
+                Object [] ob={"Po","Jo"};
+                int i = javax.swing.JOptionPane.showOptionDialog(this, "A jeni i sigurt që doni ta fshini ?","",JOptionPane.OK_OPTION,JOptionPane.QUESTION_MESSAGE, null, ob, ob[1]);
+                if(i==0)
+                {   
+                    OpenLead o=this.openleadTableModel.getLead(row);
+                    openleadRepository.remove(o);
+                    tabelaLoad();
+                    emptyObject();
+                    JOptionPane.showMessageDialog(this, "E dhëna është fshir me sukses!");
+                }
+                else{
+                JOptionPane.showMessageDialog(this, "Nuk keni selektuar asgjë për të fshir!");
+                }
+            }
+        
+        }catch(UsersException ue)
+        {
+            JOptionPane.showMessageDialog(this, ue.getMessage());
+        }
+    }//GEN-LAST:event_btn_DeleteActionPerformed
+
+    private void btn_RaportiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RaportiActionPerformed
+        // TODO add your handling code here:
+         try{   
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=CRM;user=loni;password=gramosi2");
+            String report="C:\\Users\\Gramos\\Desktop\\Raporti\\Raportet\\report6.jrxml";
+            JasperReport jr=JasperCompileManager.compileReport(report);
+            JasperPrint jp=JasperFillManager.fillReport(jr, null,con);
+            
+            JFrame frame = new JFrame("Raporti");
+            frame.setExtendedState(Frame.MAXIMIZED_BOTH); 
+            frame.getContentPane().add(new JRViewer(jp));
+            frame.pack();
+            frame.setVisible(true);
+        }catch(ClassNotFoundException | SQLException | JRException e)
+        {
+            JOptionPane.showMessageDialog(null,e);
+        }   
+    }//GEN-LAST:event_btn_RaportiActionPerformed
+
+    private void btn_PdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_PdfActionPerformed
+        try{   
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=CRM;user=loni;password=gramosi2");
+            String report="C:\\Users\\Gramos\\Desktop\\Raporti\\Raportet\\report6.jrxml";
+            JasperReport jr=JasperCompileManager.compileReport(report);
+            JasperPrint jp=JasperFillManager.fillReport(jr, null,con);
+            JasperExportManager.exportReportToPdfFile(jp,"C:\\Users\\Gramos\\Desktop\\Raporti\\OpenLead.pdf");
+        }catch(ClassNotFoundException | SQLException | JRException e)
+        {
+            JOptionPane.showMessageDialog(null,e);
+        } 
+    }//GEN-LAST:event_btn_PdfActionPerformed
+
+    private void btn_ExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ExcelActionPerformed
+        try{   
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=CRM;user=loni;password=gramosi2");
+            String report="C:\\Users\\Gramos\\Desktop\\Raporti\\Raportet\\report6.jrxml";
+            JasperReport jr=JasperCompileManager.compileReport(report);
+            JasperPrint jp=JasperFillManager.fillReport(jr, null,con);
+            JExcelApiExporter exporter = new JExcelApiExporter();
+
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, "C:\\Users\\Gramos\\Desktop\\Raporti\\OpenLead.xls");
+            exporter.exportReport();
+        }catch(ClassNotFoundException | SQLException | JRException e)
+        {
+            JOptionPane.showMessageDialog(null,e);
+        } 
+    }//GEN-LAST:event_btn_ExcelActionPerformed
+
+    private void btn_WordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_WordActionPerformed
+       try{   
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=CRM;user=loni;password=gramosi2");
+            String report="C:\\Users\\Gramos\\Desktop\\Raporti\\Raportet\\report6.jrxml";
+            JasperReport jr=JasperCompileManager.compileReport(report);
+            JasperPrint jp=JasperFillManager.fillReport(jr, null,con);
+            JRDocxExporter exporter = new JRDocxExporter();
+
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+            exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, "C:\\Users\\Gramos\\Desktop\\Raporti\\OpenLead.doc");
+            exporter.exportReport();
+        }catch(ClassNotFoundException | SQLException | JRException e)
+        {
+            JOptionPane.showMessageDialog(null,e);
+        } 
+    }//GEN-LAST:event_btn_WordActionPerformed
+
+    private void txt_KodiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_KodiKeyTyped
+       char ch = evt.getKeyChar();
+        
+        if(ch< '0' || ch > '9' )
+        {    
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_KodiKeyTyped
+
+    private void txt_TelefoniKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_TelefoniKeyTyped
+        char ch = evt.getKeyChar();
+        
+        if(ch< '0' || ch > '9' )
+        {    
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_TelefoniKeyTyped
+
+    private void txt_EmriKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_EmriKeyTyped
+       char ch = evt.getKeyChar();
+       
+        if (ch < 'a' || evt.getKeyCode() > 'Z'){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_EmriKeyTyped
+
+    private void txt_MbiemriKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_MbiemriKeyTyped
+        char ch = evt.getKeyChar();
+       
+        if (ch < 'a' || evt.getKeyCode() > 'Z'){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_MbiemriKeyTyped
+
+    private void txt_QytetiKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_QytetiKeyTyped
+        char ch = evt.getKeyChar();
+       
+        if (ch < 'a' || evt.getKeyCode() > 'Z'){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_QytetiKeyTyped
+    private void filteri() {    
+        sorter = new TableRowSorter<OpenLeadTableModel>(openleadTableModel);    
+        tabela.setRowSorter(sorter);    
+        try {
+            rf = RowFilter.regexFilter(FilterId.getText(),1);
+        } 
+        catch(java.util.regex.PatternSyntaxException pe) {
+            return;
+        }
+        sorter.setRowFilter(rf);   
+    }
+    private void FilterIdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_FilterIdKeyTyped
+       filteri();
+    }//GEN-LAST:event_FilterIdKeyTyped
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField FilterId;
+    private javax.swing.JRadioButton R_Kontaktuar;
+    private javax.swing.JRadioButton R_PaKontaktuar;
+    private javax.swing.JButton btn_Cancel;
+    private javax.swing.JButton btn_Delete;
+    private javax.swing.JButton btn_Excel;
+    private javax.swing.JButton btn_Pdf;
+    private javax.swing.JButton btn_Raporti;
+    private javax.swing.JButton btn_Save;
+    private javax.swing.JButton btn_Word;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox cmb_Oferta;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tabela;
+    private javax.swing.JTextField txt_Email;
+    private javax.swing.JTextField txt_Emri;
+    private javax.swing.JTextField txt_Kodi;
+    private javax.swing.JTextField txt_Kompania;
+    private javax.swing.JTextField txt_Mbiemri;
+    private javax.swing.JTextField txt_Qyteti;
+    private javax.swing.JTextField txt_Shteti;
+    private javax.swing.JTextField txt_Telefoni;
+    private javax.swing.JTextField txt_rruga;
+    // End of variables declaration//GEN-END:variables
+}
